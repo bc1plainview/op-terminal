@@ -586,7 +586,7 @@ function switchTab(name) {
   document.querySelectorAll('#mobileNav .mobile-nav__item').forEach(function(m) {
     m.classList.toggle('mobile-nav__item--active', m.dataset.tab === name);
   });
-  if (name === 'explorer') setTimeout(function() { $('searchInput').focus(); }, 50);
+  if (name === 'explorer') { renderExplorerDefault(); setTimeout(function() { $('searchInput').focus(); }, 50); }
   if (name === 'profile') { updateWalletPortfolio(); updateTokenHoldings(); }
   try { history.replaceState(null, '', '#' + name); } catch(e) {}
   setTimeout(applyRevealClasses, 50);
@@ -1224,19 +1224,94 @@ function updateNetworkStats() {
 
 /* ===== Explorer Search ===== */
 function isAddress(input) { return /^(tb1|bc1|bcrt1|opt1)/.test(input); }
+function isHexContract(input) { return /^0x[0-9a-fA-F]{64}$/.test(input); }
 function isTxHash(input) { return /^[0-9a-fA-F]{64}$/.test(input); }
 function isBlockNum(input) { return /^\d+$/.test(input) && parseInt(input, 10) > 0; }
 
 async function search() {
   var raw = $('searchInput').value.trim();
   var resultEl = $('searchResult'), errorEl = $('searchError');
+  var defaultEl = $('explorerDefault');
   resultEl.style.display = 'none'; errorEl.style.display = 'none';
-  if (!raw) { errorEl.textContent = 'Enter an address, transaction hash, or block number.'; errorEl.style.display = 'block'; return; }
+  if (defaultEl) defaultEl.style.display = 'none';
+  if (!raw) { errorEl.textContent = 'Enter an address, transaction hash, block number, or 0x contract address.'; errorEl.style.display = 'block'; return; }
   saveSearchHistory(raw);
-  if (isBlockNum(raw))        await searchBlock(parseInt(raw, 10), resultEl, errorEl);
-  else if (isAddress(raw))    await searchAddress(raw, resultEl, errorEl);
-  else if (isTxHash(raw))     await searchTx(raw, resultEl, errorEl);
-  else { errorEl.textContent = 'Invalid input. Enter a Bitcoin address, 64-char hex tx hash, or block number.'; errorEl.style.display = 'block'; }
+  // Normalize: strip 0x prefix for tx hash check
+  var stripped = raw.startsWith('0x') ? raw.slice(2) : raw;
+  if (isBlockNum(raw))             await searchBlock(parseInt(raw, 10), resultEl, errorEl);
+  else if (isAddress(raw))         await searchAddress(raw, resultEl, errorEl);
+  else if (isHexContract(raw))     await searchAddress(raw, resultEl, errorEl);
+  else if (isTxHash(raw))          await searchTx(raw, resultEl, errorEl);
+  else if (isTxHash(stripped))     await searchTx(stripped, resultEl, errorEl);
+  else { errorEl.textContent = 'Invalid input. Enter a Bitcoin address, 0x contract address, 64-char hex tx hash, or block number.'; errorEl.style.display = 'block'; }
+}
+
+function renderExplorerDefault() {
+  var el = $('explorerDefault');
+  if (!el) return;
+  // Don't show default if a search result or error is visible
+  var resultEl = $('searchResult'), errorEl = $('searchError');
+  if ((resultEl && resultEl.style.display !== 'none') || (errorEl && errorEl.style.display !== 'none')) return;
+  var contracts = Object.values(state.contracts);
+  contracts.sort(function(a, b) { return b.interactions - a.interactions; });
+  var topContracts = contracts.slice(0, 8);
+
+  var html = '<div class="explorer-welcome">';
+
+  // Quick stats
+  html += '<div class="ew-stats">';
+  html += '<div class="ew-stat"><span class="ew-stat__val mono">' + fmt(state.totalHeight || state.height || 0) + '</span><span class="ew-stat__lbl">Block Height</span></div>';
+  html += '<div class="ew-stat"><span class="ew-stat__val mono">' + Object.keys(state.contracts).length + '</span><span class="ew-stat__lbl">Contracts</span></div>';
+  html += '<div class="ew-stat"><span class="ew-stat__val mono">' + state.allBlocks.length + '</span><span class="ew-stat__lbl">Blocks Loaded</span></div>';
+  html += '</div>';
+
+  // Top contracts
+  if (topContracts.length > 0) {
+    html += '<h4 class="ew-title">Active Contracts</h4>';
+    html += '<div class="ew-contracts">';
+    for (var i = 0; i < topContracts.length; i++) {
+      var c = topContracts[i];
+      html += '<div class="ew-contract" data-addr="' + escHtml(c.address) + '">' +
+        '<span class="ew-contract__addr mono">' + escHtml(shortAddr(c.address)) + '</span>' +
+        '<span class="ew-contract__meta">' + c.interactions + ' calls &middot; #' + c.firstSeen + '–#' + c.lastSeen + '</span>' +
+      '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Recent blocks quick links
+  if (state.allBlocks.length > 0) {
+    html += '<h4 class="ew-title">Recent Blocks</h4>';
+    html += '<div class="ew-blocks">';
+    var recent = state.allBlocks.slice(0, 6);
+    for (var j = 0; j < recent.length; j++) {
+      var b = recent[j];
+      var txCount = b.txCount || (b.transactions ? b.transactions.length : 0);
+      html += '<div class="ew-block" data-num="' + b._height + '">' +
+        '<span class="ew-block__num mono">#' + fmt(b._height) + '</span>' +
+        '<span class="ew-block__meta">' + txCount + ' txs &middot; ' + timeAgo(b.time) + '</span>' +
+      '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '</div>';
+  el.innerHTML = html;
+  el.style.display = 'block';
+
+  // Bind clicks
+  el.querySelectorAll('.ew-contract').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var addr = card.dataset.addr;
+      if (addr) { $('searchInput').value = addr; search(); }
+    });
+  });
+  el.querySelectorAll('.ew-block').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var num = card.dataset.num;
+      if (num) { $('searchInput').value = num; search(); }
+    });
+  });
 }
 
 async function searchBlock(num, resultEl, errorEl) {
@@ -1271,8 +1346,8 @@ async function searchBlock(num, resultEl, errorEl) {
 
 async function searchAddress(addr, resultEl, errorEl) {
   try {
-    var isContract = addr.startsWith('opt1');
-    var promises = [fetchBalance(addr)];
+    var isContract = addr.startsWith('opt1') || addr.startsWith('0x');
+    var promises = [fetchBalance(addr).catch(function() { return '0x0'; })];
     if (isContract) promises.push(fetchCode(addr).catch(function() { return null; }));
 
     var results = await Promise.all(promises);
@@ -1290,6 +1365,13 @@ async function searchAddress(addr, resultEl, errorEl) {
       try { bcLen = atob(code.bytecode).length; } catch(e) {}
       html += '<div class="rc-row"><span class="rc-lbl">Bytecode Size</span><span class="rc-val rc-val--blue">' + fmtCompact(bcLen) + ' bytes</span></div>';
       var cInfo = state.contracts[addr];
+      // If searching by hex, try to find matching opt1 contract
+      if (!cInfo && addr.startsWith('0x')) {
+        var cKeys2 = Object.keys(state.contracts);
+        for (var ci2 = 0; ci2 < cKeys2.length; ci2++) {
+          if (state.contracts[cKeys2[ci2]].hexAddr && state.contracts[cKeys2[ci2]].hexAddr.toLowerCase() === addr.toLowerCase()) { cInfo = state.contracts[cKeys2[ci2]]; break; }
+        }
+      }
       if (cInfo) {
         html += '<div class="rc-row"><span class="rc-lbl">Interactions</span><span class="rc-val">' + cInfo.interactions + '</span></div>' +
           '<div class="rc-row"><span class="rc-lbl">Active Blocks</span><span class="rc-val">#' + cInfo.firstSeen + ' \u2013 #' + cInfo.lastSeen + '</span></div>';
@@ -1297,16 +1379,31 @@ async function searchAddress(addr, resultEl, errorEl) {
       }
     }
 
-    // Scan loaded blocks for address activity
+    // Scan loaded blocks for address activity (match opt1 address, 0x hex, or event contract addresses)
     var activity = [];
+    // Also look up hex address for this contract in state.contracts
+    var hexAddrMatch = addr.startsWith('0x') ? addr.toLowerCase() : null;
+    var opt1AddrMatch = null;
+    if (hexAddrMatch) {
+      // If searching by hex, find the matching opt1 address from state.contracts
+      var cKeys = Object.keys(state.contracts);
+      for (var ci = 0; ci < cKeys.length; ci++) {
+        if (state.contracts[cKeys[ci]].hexAddr && state.contracts[cKeys[ci]].hexAddr.toLowerCase() === hexAddrMatch) { opt1AddrMatch = cKeys[ci]; break; }
+      }
+    }
     for (var i = 0; i < state.blocks.length; i++) {
       var b = state.blocks[i];
       if (!b.transactions) continue;
       for (var j = 0; j < b.transactions.length; j++) {
         var tx = b.transactions[j];
-        if (tx.contractAddress === addr || (tx.fromLegacy || '') === addr) {
-          activity.push(tx);
+        var match = tx.contractAddress === addr || (tx.fromLegacy || '') === addr;
+        if (!match && opt1AddrMatch) match = tx.contractAddress === opt1AddrMatch;
+        if (!match && hexAddrMatch && tx.events) {
+          for (var ei = 0; ei < tx.events.length; ei++) {
+            if (tx.events[ei].contractAddress && tx.events[ei].contractAddress.toLowerCase() === hexAddrMatch) { match = true; break; }
+          }
         }
+        if (match) activity.push(tx);
       }
     }
     if (activity.length > 0) {

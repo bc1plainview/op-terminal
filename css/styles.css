@@ -350,6 +350,25 @@ a{color:var(--c-blue);text-decoration:none}a:hover{text-decoration:underline}
 .rc-val--dim{color:var(--c-t3)}.rc-val--btc{color:var(--c-btc);font-weight:600}.rc-val--blue{color:var(--c-blue)}
 .result-error{font-size:13px;color:var(--c-red);background:var(--c-red-s);border:1px solid rgba(239,68,68,.15);padding:14px 18px;border-radius:var(--r);animation:fadeIn .3s ease}
 
+/* Explorer Default Content */
+.explorer-welcome{animation:fadeIn .3s ease}
+.ew-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.ew-stat{background:var(--c-s1);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--c-border);border-radius:var(--r);padding:14px 16px;text-align:center}
+.ew-stat__val{display:block;font-size:18px;font-weight:600;color:var(--c-t1);font-variant-numeric:tabular-nums}
+.ew-stat__lbl{font-size:10px;color:var(--c-t3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.ew-title{font-size:12px;font-weight:600;color:var(--c-t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.ew-contracts{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:20px}
+.ew-contract{background:var(--c-s1);border:1px solid var(--c-border);border-radius:var(--r);padding:10px 14px;cursor:pointer;transition:all .2s ease;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ew-contract:hover{border-color:rgba(59,130,246,.25);background:var(--c-s2);transform:translateY(-1px)}
+.ew-contract__addr{font-size:11px;color:var(--c-t1)}
+.ew-contract__meta{font-size:10px;color:var(--c-t3);white-space:nowrap}
+.ew-blocks{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:10px}
+.ew-block{background:var(--c-s1);border:1px solid var(--c-border);border-radius:var(--r);padding:10px 14px;cursor:pointer;transition:all .2s ease;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ew-block:hover{border-color:rgba(59,130,246,.25);background:var(--c-s2);transform:translateY(-1px)}
+.ew-block__num{font-size:12px;color:var(--c-blue);font-weight:600}
+.ew-block__meta{font-size:10px;color:var(--c-t3);white-space:nowrap}
+@media(max-width:768px){.ew-stats{grid-template-columns:repeat(3,1fr);gap:6px}.ew-contracts,.ew-blocks{grid-template-columns:1fr}}
+
 /* Events Section in Results */
 .rc-events{margin-top:12px;padding-top:10px;border-top:1px solid var(--c-border)}
 .rc-events__title{font-size:11px;font-weight:600;color:var(--c-t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
