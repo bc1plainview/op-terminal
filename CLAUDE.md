@@ -290,10 +290,22 @@ When something doesn't work:
 ## PROJECT STRUCTURE
 
 ```
-bitpulse/
+op-terminal/
   index.html          — 5 tabs: Overview, Blocks, Transactions, Explorer, Profile
-  css/styles.css      — Dark theme, glass-morphism, responsive (1360px/900px/700px/500px)
-  js/app.js           — Single file, zero dependencies, ~1900 lines
+  css/styles.css      — Dark theme, glass-morphism, responsive (1440px/1024px/768px/480px)
+  js/app.js           — Single file, zero dependencies, ~1934 lines
+  favicon.svg         — SVG favicon with gradient OP logo
+  favicon.ico         — 32x32 ICO fallback
+  apple-touch-icon.png — 180x180 iOS icon
+  icon-192.png        — PWA icon 192x192
+  icon-512.png        — PWA icon 512x512
+  img/og-image.png    — 1200x630 Open Graph preview card
+  robots.txt          — Allows all bots including AI crawlers
+  llms.txt            — Structured site description for LLMs
+  sitemap.xml         — XML sitemap
+  manifest.json       — PWA manifest
+  vercel.json         — Security headers and cache policies
+  CLAUDE.md           — Project rules (this file)
 ```
 
 Zero npm. Zero build step. Pure HTML/CSS/JS connecting to OPNet testnet JSON-RPC.

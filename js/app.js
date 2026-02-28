@@ -1047,7 +1047,7 @@ function renderTxCard(tx, isPending) {
     detail += '</div></div>';
   }
 
-  return '<div class="tx-card" data-hash="' + escHtml(hash) + '">' +
+  return '<div class="tx-card" data-hash="' + escHtml(hash) + '" data-type="' + escHtml(opType) + '">' +
     '<div class="tx-card__top"><span class="badge ' + badgeCls + '">' + escHtml(label) + '</span>' +
     (isPending && opType !== 'Generic' ? '<span class="badge badge--' + (opType === 'Interaction' ? 'interaction' : opType === 'Deployment' ? 'deployment' : 'generic') + '">' + escHtml(opType) + '</span>' : '') +
     '<span class="tx-card__hash">' + escHtml(shortHash(hash)) + '</span>' + evtHtml + chevron + '</div>' +
@@ -1758,7 +1758,7 @@ async function poll() {
     var height = hex(results[0]), gas = results[1], mempool = results[2], epoch = results[3];
     setNetwork(true);
     state.totalHeight = height;
-    document.title = 'OP Terminal \u00b7 Block #' + fmt(height);
+    document.title = 'OP_TERMINAL \u00b7 Block #' + fmt(height);
     updateSyncStatus();
     updateHeroStats(height, gas, mempool);
     updateEpoch(epoch);
