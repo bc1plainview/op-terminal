@@ -1,0 +1,35 @@
+# OP_TERMINAL
+
+> Real-time OPNet network monitor — live blocks, gas analytics, contract explorer, mempool tracking, and wallet portfolio on Bitcoin L1.
+
+OP_TERMINAL is a zero-dependency vanilla JavaScript web application that connects directly to the OPNet testnet JSON-RPC endpoint. It provides a comprehensive dashboard for monitoring the OPNet blockchain, which enables smart contracts on Bitcoin Layer 1 using Tapscript-encoded calldata.
+
+## Features
+
+- **Live Block Explorer**: Real-time block fetching with transaction details, gas usage, and contract interactions
+- **Gas Analytics**: Per-block gas usage chart with interactive tooltips and historical data
+- **Contract Catalog**: Automatic discovery and categorization of deployed smart contracts
+- **Mempool Monitor**: Real-time pending transaction count and OPNet transaction ratio
+- **Wallet Integration**: OP_WALLET browser extension support with BTC balance, UTXO listing, and token holdings
+- **Token Detection**: Automatic OP-20 token balance checking (MOTO, PILL, basedMOTO) with multi-address candidate resolution
+- **Explorer Search**: Look up any address, transaction hash, block number, or contract
+- **IndexedDB Caching**: Persistent block cache for instant page reload without re-fetching
+
+## Technical Details
+
+- **Stack**: Pure HTML, CSS, JavaScript (zero npm dependencies, zero build step)
+- **RPC**: Connects to `https://testnet.opnet.org/api/v1/json-rpc`
+- **Network**: OPNet Testnet (Signet fork), addresses use `opt1p` prefix (bech32m)
+- **ABI Encoding**: SHA256 function selectors (not Keccak256), big-endian, no padding
+- **Address Format**: 32-byte native addresses (not 20-byte Ethereum-style)
+
+## Links
+
+- [Live App](https://op-terminal.vercel.app)
+- [Source Code](https://github.com/bc1plainview/op-terminal)
+- [OPNet Documentation](https://docs.opnet.org)
+- [vibecode.finance Hackathon](https://vibecode.finance)
+
+## Author
+
+Built by bc1plainview for the vibecode.finance Hackathon 2026.

@@ -1,15 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Encoding & Viewport -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- Primary SEO -->
   <title>OP_TERMINAL — OPNet Network Monitor</title>
-  <meta name="description" content="Real-time OPNet network monitor. Live blocks, gas analytics, contract explorer, mempool tracking, and wallet portfolio — Bitcoin L1 smart contracts." />
+  <meta name="description" content="Real-time OPNet network monitor. Live blocks, gas analytics, contract explorer, mempool tracking, and wallet portfolio on Bitcoin L1." />
+  <meta name="author" content="bc1plainview" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="keywords" content="OPNet, Bitcoin, smart contracts, blockchain, network monitor, block explorer, gas analytics, mempool, wallet, OP_TERMINAL, Bitcoin L1, DeFi" />
+  <link rel="canonical" href="https://op-terminal.vercel.app/" />
+
+  <!-- Open Graph — Facebook, LinkedIn, Discord, Telegram, WhatsApp -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://op-terminal.vercel.app/" />
+  <meta property="og:site_name" content="OP_TERMINAL" />
+  <meta property="og:title" content="OP_TERMINAL — OPNet Network Monitor" />
+  <meta property="og:description" content="Live blocks, gas analytics, contract explorer & wallet portfolio on Bitcoin L1." />
+  <meta property="og:image" content="https://op-terminal.vercel.app/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="OP_TERMINAL dashboard showing real-time OPNet blockchain data" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OP_TERMINAL — OPNet Network Monitor" />
+  <meta name="twitter:description" content="Live blocks, gas analytics, contract explorer & wallet portfolio on Bitcoin L1." />
+  <meta name="twitter:image" content="https://op-terminal.vercel.app/img/og-image.png" />
+  <meta name="twitter:image:alt" content="OP_TERMINAL dashboard showing real-time OPNet blockchain data" />
+
+  <!-- Theme Color — Discord embed accent + mobile browser chrome -->
+  <meta name="theme-color" content="#0A0A0F" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#3B82F6" media="(prefers-color-scheme: light)" />
+
+  <!-- Apple iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="OP_TERMINAL" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://testnet.opnet.org" />
+
+  <!-- Fonts & Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%233B82F6'/><stop offset='100%25' stop-color='%2306B6D4'/></linearGradient></defs><rect width='100' height='100' rx='18' fill='url(%23g)'/><text x='50' y='66' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='40' fill='white'>OP</text></svg>" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "OP_TERMINAL",
+    "url": "https://op-terminal.vercel.app",
+    "description": "Real-time OPNet network monitor with live blocks, gas analytics, contract explorer, mempool tracking, and wallet portfolio on Bitcoin L1.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "inLanguage": "en-US",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "bc1plainview",
+      "url": "https://github.com/bc1plainview"
+    },
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28",
+    "screenshot": "https://op-terminal.vercel.app/img/og-image.png"
+  }
+  </script>
 </head>
 <body>
 
@@ -22,14 +99,14 @@
   </div>
 
   <!-- TOP BAR -->
-  <header class="topbar">
+  <header class="topbar" role="banner">
     <div class="topbar__left">
       <a href="#" class="topbar__logo"><span class="logo-mark">OP</span><span class="logo-text">_TERMINAL</span><span class="logo-cursor"></span></a>
       <span class="topbar__sep"></span>
       <span class="topbar__network" id="netBadge"><span class="net-dot" id="netDot"></span><span id="netLabel">Connecting...</span></span>
       <span class="topbar__activity" id="netActivity"></span>
     </div>
-    <nav class="topbar__nav" id="tabNav">
+    <nav class="topbar__nav" id="tabNav" aria-label="Main navigation">
       <a href="#" class="tab tab--active" data-tab="overview">Overview</a>
       <a href="#" class="tab" data-tab="blocks">Blocks</a>
       <a href="#" class="tab" data-tab="txs">Transactions</a>
@@ -43,14 +120,14 @@
         <span class="meta-item meta-item--sync" id="syncItem"><span class="meta-label">Sync</span><span class="meta-value mono" id="syncStatus">--</span></span>
         <span class="meta-item meta-item--refresh"><span class="meta-label">Next</span><span class="meta-value mono" id="refreshCountdown">10s</span></span>
       </div>
-      <button class="wallet-btn" id="walletBtn">
+      <button class="wallet-btn" id="walletBtn" aria-label="Connect wallet">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M14 7.5h-3a1.5 1.5 0 000 3h3" stroke="currentColor" stroke-width="1.5"/></svg>
         <span id="walletBtnLabel">Connect</span>
       </button>
     </div>
   </header>
 
-  <main class="main">
+  <main class="main" role="main">
 
     <!-- ========== OVERVIEW TAB ========== -->
     <div class="tab-panel active" id="panel-overview">
@@ -256,7 +333,7 @@
     <div class="tab-panel" id="panel-explorer">
       <div class="search-box">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--c-t3)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" class="search-box__input" id="searchInput" placeholder="Address, tx hash, block number, or contract (opt1...)" spellcheck="false" autocomplete="off" />
+        <input type="text" class="search-box__input" id="searchInput" placeholder="Address, tx hash, block number, or contract (opt1...)" spellcheck="false" autocomplete="off" aria-label="Search OPNet blockchain" />
         <button class="btn btn--primary btn--sm" id="searchBtn">Search</button>
       </div>
       <div id="searchHistory" class="search-history"></div>
@@ -326,7 +403,7 @@
   </div>
 
   <!-- Mobile Bottom Nav -->
-  <nav class="mobile-nav" id="mobileNav">
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
     <a href="#overview" class="mobile-nav__item mobile-nav__item--active" data-tab="overview">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span>Overview</span>
@@ -349,7 +426,7 @@
     </a>
   </nav>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="footer__l"><span class="logo-mark logo-mark--sm">OP</span><span class="footer__brand">_TERMINAL</span></div>
     <div class="footer__c">Built for <a href="https://vibecode.finance" target="_blank" rel="noopener">vibecode.finance</a> Hackathon 2026 &mdash; Powered by <a href="https://opnet.org" target="_blank" rel="noopener">OPNet</a></div>
     <div class="footer__r"><a href="https://docs.opnet.org" target="_blank" rel="noopener">Docs</a></div>
